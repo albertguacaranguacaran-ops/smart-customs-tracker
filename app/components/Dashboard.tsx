@@ -173,7 +173,7 @@ export function Dashboard() {
                         <Package className="w-6 h-6 text-white" />
                     </div>
                     <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                        TextilTrack <span className="text-xs font-normal text-slate-500 border border-slate-700 px-2 py-0.5 rounded ml-2">v1.0.0 PROTOTYPE</span>
+                        TRAFITDOSSIER <span className="text-xs font-normal text-slate-500 border border-slate-700 px-2 py-0.5 rounded ml-2">v1.0.0 PROTOTYPE</span>
                     </h1>
                 </div>
 
