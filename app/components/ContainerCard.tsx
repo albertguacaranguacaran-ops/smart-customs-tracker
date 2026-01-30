@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container } from '../types';
-import { Ship, Anchor, AlertTriangle, CheckCircle, Clock, Map, X, Loader2, MessageCircle, Truck } from 'lucide-react';
+import { Ship, Anchor, AlertTriangle, CheckCircle, Clock, Map, X, Loader2, MessageCircle, Truck, ArrowRight, ChevronRight } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { VerificationReportModal } from './VerificationReport';
@@ -9,6 +9,7 @@ import { ActivityLogModal } from './ActivityLog';
 
 interface Props {
     container: Container;
+    onStatusChange?: (containerId: string, newStatus: Container['status']) => void;
 }
 
 // Dynamic Error Generator for Antimultas Demo
@@ -108,10 +109,30 @@ const generateVerificationReport = (container: Container): VerificationReport =>
     };
 };
 
-export function ContainerCard({ container }: Props) {
+export function ContainerCard({ container, onStatusChange }: Props) {
     const [showTracker, setShowTracker] = useState(false);
     const [showVerify, setShowVerify] = useState(false);
     const [showChat, setShowChat] = useState(false);
+
+    // Get next status in the workflow
+    const getNextStatus = (current: Container['status']): Container['status'] | null => {
+        const flow: Container['status'][] = ['TRANSIT', 'PORT', 'CUSTOMS', 'WAREHOUSE'];
+        const currentIndex = flow.indexOf(current);
+        if (currentIndex < flow.length - 1) {
+            return flow[currentIndex + 1];
+        }
+        return null; // Already at final status
+    };
+
+    // Get button label for next status
+    const getNextStatusLabel = (current: Container['status']): string => {
+        switch (current) {
+            case 'TRANSIT': return '📍 Llegó a Puerto';
+            case 'PORT': return '🛃 Pasar a Aduana';
+            case 'CUSTOMS': return '✅ Liberar';
+            default: return '';
+        }
+    };
 
     const getSencamerColor = (status: string) => {
         switch (status) {
@@ -259,6 +280,23 @@ export function ContainerCard({ container }: Props) {
                     <div className="w-full bg-slate-700 h-1 mt-3 rounded-full overflow-hidden">
                         <div className="bg-blue-500 h-full w-[75%]"></div>
                     </div>
+                )}
+
+                {/* Advance Button - Move to next status */}
+                {onStatusChange && getNextStatus(container.status) && (
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            const nextStatus = getNextStatus(container.status);
+                            if (nextStatus && container.id) {
+                                onStatusChange(container.id, nextStatus);
+                            }
+                        }}
+                        className="w-full mt-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg shadow-emerald-900/30"
+                    >
+                        <span>{getNextStatusLabel(container.status)}</span>
+                        <ChevronRight className="w-4 h-4" />
+                    </button>
                 )}
             </div>
 

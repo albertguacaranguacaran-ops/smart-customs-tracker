@@ -6,7 +6,7 @@ import { DocumentUploader } from './DocumentUploader';
 import { DuplicateAlertModal } from './DuplicateAlert';
 import { Search, Ship, Anchor, FileText, Package, AlertTriangle, Filter, Download, Loader2 } from 'lucide-react';
 import { clsx } from 'clsx';
-import { subscribeToContainers, addContainer } from '../lib/containerService';
+import { subscribeToContainers, addContainer, updateContainerStatus } from '../lib/containerService';
 
 // Initial seed data (only used if Firestore is empty)
 const SEED_DATA: Omit<Container, 'id'>[] = [
@@ -275,7 +275,18 @@ export function Dashboard() {
                             {filteredData
                                 .filter(c => c.status === col.id)
                                 .map(container => (
-                                    <ContainerCard key={container.id} container={container} />
+                                    <ContainerCard
+                                        key={container.id}
+                                        container={container}
+                                        onStatusChange={async (id, newStatus) => {
+                                            try {
+                                                await updateContainerStatus(id, newStatus);
+                                                console.log(`✅ Container ${id} moved to ${newStatus}`);
+                                            } catch (error) {
+                                                console.error('❌ Error updating status:', error);
+                                            }
+                                        }}
+                                    />
                                 ))}
 
                             {filteredData.filter(c => c.status === col.id).length === 0 && (
