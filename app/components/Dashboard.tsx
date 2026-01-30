@@ -145,11 +145,20 @@ export function Dashboard() {
     });
 
     const getKPIs = () => {
+        // Calculate demurrage risk: containers with ETA in the past or within 3 days
+        const today = new Date();
+        const demurrageCount = containers.filter((c: Container) => {
+            if (!c.eta) return false;
+            const etaDate = new Date(c.eta);
+            const diffDays = Math.ceil((etaDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+            return diffDays <= 3; // ETA within 3 days or overdue
+        }).length;
+
         return {
             total: containers.length,
             inPort: containers.filter((c: Container) => c.status === 'PORT').length,
             sencamerIssues: containers.filter((c: Container) => c.sencamerStatus === 'EXPIRED' || c.sencamerStatus === 'WARNING').length,
-            demurrageRisk: 3 // Hardcoded for demo
+            demurrageRisk: demurrageCount
         };
     };
 
