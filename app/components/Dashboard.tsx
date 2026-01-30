@@ -169,8 +169,8 @@ export function Dashboard() {
             {/* Top Bar */}
             <header className="flex justify-between items-center mb-8">
                 <div className="flex items-center space-x-3">
-                    <div className="bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-lg p-2">
-                        <Package className="w-6 h-6 text-white" />
+                    <div className="bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 rounded-xl p-2.5 shadow-lg shadow-purple-500/30 animate-pulse">
+                        <span className="text-2xl">🐙</span>
                     </div>
                     <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
                         TRAFITDOSSIER <span className="text-xs font-normal text-slate-500 border border-slate-700 px-2 py-0.5 rounded ml-2">v1.0.0 PROTOTYPE</span>
